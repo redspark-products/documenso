@@ -50,6 +50,7 @@ export const ZUpdateTeamSettingsRequestSchema = z.object({
     defaultRecipients: ZDefaultRecipientsSchema.nullish(),
     // AI features settings.
     aiFeaturesEnabled: z.boolean().nullish(),
+    requireSignerSelfie: z.boolean().nullish(),
   }),
 });
 

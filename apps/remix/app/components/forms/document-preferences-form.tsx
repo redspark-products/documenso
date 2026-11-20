@@ -44,6 +44,7 @@ export type TDocumentPreferencesFormSchema = {
   defaultRecipients: TDefaultRecipients | null;
   delegateDocumentOwnership: boolean | null;
   aiFeaturesEnabled: boolean | null;
+  requireSignerSelfie: boolean | null;
 };
 
 type SettingsSubset = Pick<
@@ -58,6 +59,7 @@ type SettingsSubset = Pick<
   | 'defaultRecipients'
   | 'delegateDocumentOwnership'
   | 'aiFeaturesEnabled'
+  | 'requireSignerSelfie'
 >;
 
 export type DocumentPreferencesFormProps = {
@@ -78,6 +80,7 @@ const getDocumentPreferencesFormValues = (settings: SettingsSubset): TDocumentPr
     defaultRecipients: settings.defaultRecipients ? ZDefaultRecipientsSchema.parse(settings.defaultRecipients) : null,
     delegateDocumentOwnership: settings.delegateDocumentOwnership,
     aiFeaturesEnabled: settings.aiFeaturesEnabled,
+    requireSignerSelfie: settings.requireSignerSelfie,
   };
 };
 
@@ -102,6 +105,7 @@ export const DocumentPreferencesForm = ({ settings, onFormSubmit, canInherit }: 
     defaultRecipients: ZDefaultRecipientsSchema.nullable(),
     delegateDocumentOwnership: z.boolean().nullable(),
     aiFeaturesEnabled: z.boolean().nullable(),
+    requireSignerSelfie: z.boolean().nullable(),
   });
 
   const defaultValues = getDocumentPreferencesFormValues(settings);
@@ -539,6 +543,57 @@ export const DocumentPreferencesForm = ({ settings, onFormSubmit, canInherit }: 
               )}
             />
           )}
+
+          <FormField
+            control={form.control}
+            name="requireSignerSelfie"
+            render={({ field }) => (
+              <InheritableField
+                className="flex-1"
+                canInherit={canInherit}
+                isInherited={field.value === null}
+                label={<Trans>Require signer selfie</Trans>}
+                testId="require-signer-selfie"
+              >
+                <FormControl>
+                  <Select
+                    {...field}
+                    value={field.value === null ? '-1' : field.value.toString()}
+                    onValueChange={(value) =>
+                      field.onChange(value === 'true' ? true : value === 'false' ? false : null)
+                    }
+                  >
+                    <SelectTrigger className="bg-background text-muted-foreground">
+                      <SelectValue />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      <SelectItem value="true">
+                        <Trans>Enabled</Trans>
+                      </SelectItem>
+
+                      <SelectItem value="false">
+                        <Trans>Disabled</Trans>
+                      </SelectItem>
+
+                      {canInherit && (
+                        <SelectItem value={'-1'}>
+                          <Trans>Inherit from organisation</Trans>
+                        </SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+
+                <FormDescription>
+                  <Trans>
+                    Default for new documents. Signers must consent to and capture a selfie with their camera before
+                    completing. The selfie is biometric data and is added to the signing certificate.
+                  </Trans>
+                </FormDescription>
+              </InheritableField>
+            )}
+          />
 
           <FormStickySaveBar
             isDirty={form.formState.isDirty}

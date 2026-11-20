@@ -40,13 +40,15 @@ export default function OrganisationSettingsDocumentPage() {
         defaultRecipients,
         delegateDocumentOwnership,
         aiFeaturesEnabled,
+        requireSignerSelfie,
       } = data;
 
       if (
         documentVisibility === null ||
         documentLanguage === null ||
         documentDateFormat === null ||
-        aiFeaturesEnabled === null
+        aiFeaturesEnabled === null ||
+        requireSignerSelfie === null
       ) {
         throw new Error('Should not be possible.');
       }
@@ -64,6 +66,7 @@ export default function OrganisationSettingsDocumentPage() {
           drawSignatureEnabled: signatureTypes.includes(DocumentSignatureType.DRAW),
           delegateDocumentOwnership,
           aiFeaturesEnabled,
+          requireSignerSelfie,
         },
       });
 
