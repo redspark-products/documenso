@@ -191,6 +191,8 @@ export const generateDefaultTeamSettings = (): Omit<TeamGlobalSettings, 'id' | '
     uploadSignatureEnabled: null,
     drawSignatureEnabled: null,
 
+    requireSignerSelfie: null,
+
     brandingEnabled: null,
     brandingLogo: null,
     brandingUrl: null,
