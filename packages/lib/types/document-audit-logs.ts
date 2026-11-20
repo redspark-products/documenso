@@ -65,6 +65,8 @@ export const ZDocumentAuditLogTypeSchema = z.enum([
   'DOCUMENT_RECIPIENT_CSC_SIGN_REQUESTED', // Recipient clicked Sign; CSC session created with captured per-item hashes.
   'DOCUMENT_RECIPIENT_CSC_AUTHORIZED', // Credential-scope OAuth complete; SAD attached to the CSC session.
   'DOCUMENT_RECIPIENT_CSC_SIGNED', // TSP returned signatures and they were embedded into the recipient's PDF bytes.
+
+  'DOCUMENT_RECIPIENT_SELFIE_CAPTURED', // Recipient consented and submitted an identity selfie before completing.
 ]);
 
 export const ZDocumentAuditLogEmailTypeSchema = z.enum([
@@ -867,6 +869,19 @@ export const ZDocumentAuditLogEventDocumentRecipientCscSignedSchema = z.object({
   }),
 });
 
+/**
+ * Event: Recipient captured an identity selfie. The image itself is never
+ * stored in the audit log, only the hash that ties it to the stored evidence.
+ */
+export const ZDocumentAuditLogEventDocumentRecipientSelfieCapturedSchema = z.object({
+  type: z.literal(DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_SELFIE_CAPTURED),
+  data: ZBaseRecipientDataSchema.extend({
+    selfieId: z.string(),
+    sha256: z.string(),
+    consentTextVersion: z.string(),
+  }),
+});
+
 export const ZDocumentAuditLogBaseSchema = z.object({
   id: z.string(),
   createdAt: z.date(),
@@ -924,6 +939,7 @@ export const ZDocumentAuditLogSchema = ZDocumentAuditLogBaseSchema.and(
     ZDocumentAuditLogEventDocumentRecipientCscSignRequestedSchema,
     ZDocumentAuditLogEventDocumentRecipientCscAuthorizedSchema,
     ZDocumentAuditLogEventDocumentRecipientCscSignedSchema,
+    ZDocumentAuditLogEventDocumentRecipientSelfieCapturedSchema,
   ]),
 );
 
