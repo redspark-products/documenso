@@ -21,7 +21,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import type { Field, Recipient } from '@prisma/client';
 import { RecipientRole } from '@prisma/client';
 import type { ReactNode } from 'react';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { match } from 'ts-pattern';
 import { z } from 'zod';
@@ -33,6 +33,8 @@ import { DocumentSigningDisclosure } from '~/components/general/document-signing
 import { getSigningCompletionErrorMessage } from '~/utils/toast-error-messages';
 
 import { useRequiredDocumentSigningAuthContext } from './document-signing-auth-provider';
+import { useOptionalSignerSelfieContext } from './signer-selfie-provider';
+import { SignerSelfieStep } from './signer-selfie-step';
 
 export type DocumentSigningCompleteDialogProps = {
   isSubmitting: boolean;
@@ -106,6 +108,17 @@ export const DocumentSigningCompleteDialog = ({
   const [showTwoFactorForm, setShowTwoFactorForm] = useState(false);
   const [twoFactorValidationError, setTwoFactorValidationError] = useState<string | null>(null);
 
+  const [showSelfieStep, setShowSelfieStep] = useState(false);
+
+  const selfieContext = useOptionalSignerSelfieContext();
+
+  // The resubmission right after a capture runs with this render's closure, where
+  // the context still reports no selfie, so the capture is tracked in a ref too.
+  const hasCapturedSelfieRef = useRef(false);
+
+  const completionRequiresSelfie =
+    Boolean(selfieContext?.isSelfieRequired) && recipient.role === RecipientRole.SIGNER && !selfieContext?.hasSelfie;
+
   const { derivedRecipientAccessAuth } = useRequiredDocumentSigningAuthContext();
 
   const { isNameLocked, isEmailLocked } = useEmbedSigningContext() || {};
@@ -145,6 +158,8 @@ export const DocumentSigningCompleteDialog = ({
         name: defaultNextSigner?.name ?? '',
         email: defaultNextSigner?.email ?? '',
       });
+    } else {
+      setShowSelfieStep(false);
     }
 
     setShowDialog(open);
@@ -167,6 +182,11 @@ export const DocumentSigningCompleteDialog = ({
         // Form is hidden because we have an email (e.g. from embed context),
         // but the DB recipient doesn't have one yet — send the override.
         recipientOverridePayload = recipientPayload;
+      }
+
+      if (completionRequiresSelfie && !hasCapturedSelfieRef.current) {
+        setShowSelfieStep(true);
+        return;
       }
 
       // Check if 2FA is required
@@ -192,6 +212,14 @@ export const DocumentSigningCompleteDialog = ({
         return;
       }
 
+      if (AppErrorCode.RECIPIENT_SELFIE_REQUIRED === err.code) {
+        hasCapturedSelfieRef.current = false;
+        selfieContext?.setHasSelfie(false);
+        setShowSelfieStep(true);
+
+        return;
+      }
+
       analytics.captureException(error, {
         source: 'signing',
         location: 'complete_document',
@@ -209,6 +237,14 @@ export const DocumentSigningCompleteDialog = ({
         variant: 'destructive',
       });
     }
+  };
+
+  const onSelfieCaptured = () => {
+    hasCapturedSelfieRef.current = true;
+    selfieContext?.setHasSelfie(true);
+    setShowSelfieStep(false);
+
+    void form.handleSubmit(onFormSubmit)();
   };
 
   const onTwoFactorFormSubmit = (validatedAuthOptions: TRecipientAccessAuth) => {
@@ -279,8 +315,15 @@ export const DocumentSigningCompleteDialog = ({
           <p className="font-medium text-muted-foreground text-sm">{documentTitle}</p>
         </div>
 
-        {match({ hasChildren: Boolean(children), showTwoFactorForm })
+        {match({ hasChildren: Boolean(children), showSelfieStep, showTwoFactorForm })
           .with({ hasChildren: true }, () => children)
+          .with({ showSelfieStep: true }, () => (
+            <SignerSelfieStep
+              token={recipient.token}
+              onCaptured={onSelfieCaptured}
+              onCancel={() => setShowSelfieStep(false)}
+            />
+          ))
           .with({ showTwoFactorForm: true }, () => (
             <AccessAuth2FAForm
               token={recipient.token}

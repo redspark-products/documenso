@@ -48,6 +48,7 @@ import { DocumentSigningPageViewV2 } from '~/components/general/document-signing
 import { DocumentSigningProvider } from '~/components/general/document-signing/document-signing-provider';
 import { DocumentSigningSenderDisabledPage } from '~/components/general/document-signing/document-signing-sender-disabled-page';
 import { EnvelopeSigningProvider } from '~/components/general/document-signing/envelope-signing-provider';
+import { SignerSelfieProvider } from '~/components/general/document-signing/signer-selfie-provider';
 import { RecipientBranding } from '~/components/general/recipient-branding';
 import { useCspNonce } from '~/utils/nonce';
 import { superLoaderJson, useSuperLoaderData } from '~/utils/super-json-loader';
@@ -159,9 +160,10 @@ const handleV1Loader = async ({ params, request }: Route.LoaderArgs) => {
     throw redirect(documentMeta?.redirectUrl || `/sign/${token}/complete`);
   }
 
-  const [recipientSignatures, settings] = await Promise.all([
+  const [recipientSignatures, settings, hasSelfie] = await Promise.all([
     getRecipientSignatures({ recipientId: recipient.id }),
     getTeamSettings({ teamId: document.teamId }),
+    getRecipientHasSelfie(recipient.id),
   ]);
 
   const [recipientSignature] = recipientSignatures;
@@ -177,6 +179,7 @@ const handleV1Loader = async ({ params, request }: Route.LoaderArgs) => {
     completedFields,
     recipientSignature,
     isRecipientsTurn,
+    hasSelfie,
     includeSenderDetails: settings.includeSenderDetails,
     branding: {
       brandingEnabled: settings.brandingEnabled,
@@ -326,7 +329,17 @@ const handleV2Loader = async ({ params, request }: Route.LoaderArgs) => {
   return {
     isDocumentAccessValid: true,
     envelopeForSigning,
+    hasSelfie: await getRecipientHasSelfie(recipient.id),
   } as const;
+};
+
+const getRecipientHasSelfie = async (recipientId: number) => {
+  const selfie = await prisma.recipientSelfie.findUnique({
+    where: { recipientId },
+    select: { id: true },
+  });
+
+  return selfie !== null;
 };
 
 export async function loader(loaderArgs: Route.LoaderArgs) {
@@ -442,6 +455,7 @@ const SigningPageV1 = ({ data }: { data: Awaited<ReturnType<typeof handleV1Loade
     includeSenderDetails,
     branding,
     recipientWithFields,
+    hasSelfie,
   } = data;
 
   if (document.deletedAt || document.status === DocumentStatus.REJECTED) {
@@ -501,21 +515,27 @@ const SigningPageV1 = ({ data }: { data: Awaited<ReturnType<typeof handleV1Loade
       drawSignatureEnabled={document.documentMeta?.drawSignatureEnabled}
     >
       <DocumentSigningAuthProvider documentAuthOptions={document.authOptions} recipient={recipient} user={user}>
-        {sessionData?.user && <AuthenticatedHeader />}
+        <SignerSelfieProvider
+          token={recipient.token}
+          isSelfieRequired={Boolean(document.documentMeta?.requireSignerSelfie)}
+          initialHasSelfie={hasSelfie}
+        >
+          {sessionData?.user && <AuthenticatedHeader />}
 
-        <div className="mt-8 mb-8 px-4 md:mt-12 md:mb-12 md:px-8">
-          <DocumentSigningPageViewV1
-            recipient={recipientWithFields}
-            document={document}
-            fields={fields}
-            completedFields={completedFields}
-            isRecipientsTurn={isRecipientsTurn}
-            allRecipients={allRecipients}
-            nextRecipient={nextRecipient ?? undefined}
-            includeSenderDetails={includeSenderDetails}
-            branding={branding}
-          />
-        </div>
+          <div className="mt-8 mb-8 px-4 md:mt-12 md:mb-12 md:px-8">
+            <DocumentSigningPageViewV1
+              recipient={recipientWithFields}
+              document={document}
+              fields={fields}
+              completedFields={completedFields}
+              isRecipientsTurn={isRecipientsTurn}
+              allRecipients={allRecipients}
+              nextRecipient={nextRecipient ?? undefined}
+              includeSenderDetails={includeSenderDetails}
+              branding={branding}
+            />
+          </div>
+        </SignerSelfieProvider>
       </DocumentSigningAuthProvider>
     </DocumentSigningProvider>
   );
@@ -606,7 +626,13 @@ const SigningPageV2 = ({ data }: { data: Awaited<ReturnType<typeof handleV2Loade
           contents={envelope.contents}
           token={recipient.token}
         >
-          <DocumentSigningPageViewV2 />
+          <SignerSelfieProvider
+            token={recipient.token}
+            isSelfieRequired={envelope.documentMeta.requireSignerSelfie}
+            initialHasSelfie={'hasSelfie' in data && Boolean(data.hasSelfie)}
+          >
+            <DocumentSigningPageViewV2 />
+          </SignerSelfieProvider>
         </EnvelopeRenderProvider>
       </DocumentSigningAuthProvider>
     </EnvelopeSigningProvider>
