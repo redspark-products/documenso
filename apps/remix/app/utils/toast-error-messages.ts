@@ -78,6 +78,10 @@ export const getSigningCompletionErrorMessage = (code: string): ToastMessageDesc
       title: msg`Some fields were not saved`,
       description: msg`One or more of your required fields have not been saved. Please refresh the page, complete any empty required fields, and try again.`,
     }))
+    .with(AppErrorCode.RECIPIENT_SELFIE_REQUIRED, () => ({
+      title: msg`Selfie required`,
+      description: msg`This document requires a selfie to confirm your identity. Open the signing link sent to your email in a browser with camera access to complete it.`,
+    }))
     .with(AppErrorCode.RECIPIENT_OUT_OF_TURN, () => ({
       title: msg`It's not your turn to sign yet`,
       description: msg`This document is signed in a set order and other recipients must sign before you. You will receive an email when it is your turn.`,

@@ -63,6 +63,7 @@ import {
 import { Input } from '@documenso/ui/primitives/input';
 import { MultiSelectCombobox } from '@documenso/ui/primitives/multi-select-combobox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@documenso/ui/primitives/select';
+import { Switch } from '@documenso/ui/primitives/switch';
 import { Textarea } from '@documenso/ui/primitives/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@documenso/ui/primitives/tooltip';
 import { useToast } from '@documenso/ui/primitives/use-toast';
@@ -120,6 +121,7 @@ export const ZAddSettingsFormSchema = z.object({
     }),
     envelopeExpirationPeriod: ZEnvelopeExpirationPeriod.nullish(),
     reminderSettings: ZEnvelopeReminderSettings.nullish(),
+    requireSignerSelfie: z.boolean().optional().default(false),
   }),
 });
 
@@ -210,6 +212,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
         signatureTypes: extractTeamSignatureSettings(envelope.documentMeta),
         envelopeExpirationPeriod: envelope.documentMeta?.envelopeExpirationPeriod ?? null,
         reminderSettings: envelope.documentMeta?.reminderSettings ?? null,
+        requireSignerSelfie: envelope.documentMeta.requireSignerSelfie,
       },
     };
   };
@@ -259,6 +262,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
       emailReplyTo,
       envelopeExpirationPeriod,
       reminderSettings,
+      requireSignerSelfie,
     } = data.meta;
 
     const parsedGlobalAccessAuth = z.array(ZDocumentAccessAuthTypesSchema).safeParse(data.globalAccessAuth);
@@ -288,6 +292,7 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
           uploadSignatureEnabled: signatureTypes.includes(DocumentSignatureType.UPLOAD),
           envelopeExpirationPeriod,
           reminderSettings,
+          requireSignerSelfie,
         },
       });
 
@@ -931,6 +936,38 @@ export const EnvelopeEditorSettingsDialog = ({ trigger, ...props }: EnvelopeEdit
                           </FormItem>
                         )}
                       />
+
+                      {!isEmbedded && (
+                        <FormField
+                          control={form.control}
+                          name="meta.requireSignerSelfie"
+                          render={({ field }) => (
+                            <FormItem className="flex flex-row items-center justify-between gap-4">
+                              <div className="space-y-1">
+                                <FormLabel>
+                                  <Trans>Require signer selfie</Trans>
+                                </FormLabel>
+
+                                <FormDescription>
+                                  <Trans>
+                                    Signers must consent to and capture a selfie with their camera before completing.
+                                    The selfie is added to the signing certificate.
+                                  </Trans>
+                                </FormDescription>
+                              </div>
+
+                              <FormControl>
+                                <Switch
+                                  checked={field.value}
+                                  disabled={field.disabled}
+                                  onCheckedChange={field.onChange}
+                                  data-testid="require-signer-selfie-switch"
+                                />
+                              </FormControl>
+                            </FormItem>
+                          )}
+                        />
+                      )}
 
                       {!isEmbedded && (
                         <FormField

@@ -148,6 +148,7 @@ declare namespace NodeJS {
     NEXT_PUBLIC_TERMS_OF_SERVICE_URL?: string;
     NEXT_PUBLIC_PRIVACY_POLICY_URL?: string;
     NEXT_PUBLIC_IMPRINT_URL?: string;
+    NEXT_PUBLIC_SOURCE_CODE_URL?: string;
 
     /**
      * Google Vertex AI environment variables

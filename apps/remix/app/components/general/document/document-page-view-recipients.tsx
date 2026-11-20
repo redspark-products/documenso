@@ -30,6 +30,8 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router';
 import { match } from 'ts-pattern';
 
+import { RecipientSelfieViewDialog } from './recipient-selfie-view-dialog';
+
 export type DocumentPageViewRecipientsProps = {
   envelope: TEnvelope;
   documentRootPath: string;
@@ -139,6 +141,16 @@ export const DocumentPageViewRecipients = ({ envelope, documentRootPath }: Docum
                     .exhaustive()}
                 </Badge>
               )}
+
+              {envelope.documentMeta.requireSignerSelfie &&
+                recipient.role === RecipientRole.SIGNER &&
+                recipient.signingStatus === SigningStatus.SIGNED && (
+                  <RecipientSelfieViewDialog
+                    envelopeId={envelope.id}
+                    recipientId={recipient.id}
+                    recipientName={recipient.name || recipient.email}
+                  />
+                )}
 
               {envelope.status !== DocumentStatus.DRAFT &&
                 recipient.signingStatus === SigningStatus.NOT_SIGNED &&

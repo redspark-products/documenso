@@ -132,6 +132,8 @@ export const generateDefaultOrganisationSettings = (): Omit<OrganisationGlobalSe
     uploadSignatureEnabled: true,
     drawSignatureEnabled: true,
 
+    requireSignerSelfie: false,
+
     brandingEnabled: false,
     brandingLogo: '',
     brandingUrl: '',

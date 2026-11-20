@@ -740,6 +740,11 @@ export const formatDocumentAuditLogAction = (i18n: I18n, auditLog: TDocumentAudi
       you: msg`Your remote signature was applied`,
       user: msg`${user}'s remote signature was applied`,
     }))
+    .with({ type: DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_RECIPIENT_SELFIE_CAPTURED }, () => ({
+      anonymous: msg`Recipient captured an identity selfie`,
+      you: msg`You captured an identity selfie`,
+      user: msg`${user} captured an identity selfie`,
+    }))
     .exhaustive();
 
   let selectedDescription = description.anonymous;

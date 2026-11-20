@@ -37,6 +37,11 @@ export type CertificateRecipient = {
     signature?: Pick<Signature, 'signatureImageAsBase64' | 'typedSignature'> | null;
   };
   authLevel: string;
+  selfie?: {
+    image: Buffer;
+    sha256: string;
+    capturedAt: Date;
+  } | null;
   logs: {
     emailed: BaseAuditLog | null;
     sent: BaseAuditLog | null;
@@ -405,7 +410,84 @@ const renderColumnTwo = (options: RenderColumnOptions) => {
   });
   column.add(deviceLabelAndText);
 
+  if (recipient.selfie) {
+    column.add(
+      renderSelfie({
+        selfie: recipient.selfie,
+        width: columnWidth,
+        y: column.getClientRect().height + 10,
+        i18n,
+      }),
+    );
+  }
+
   return column;
+};
+
+type RenderSelfieOptions = {
+  selfie: NonNullable<CertificateRecipient['selfie']>;
+  width: number;
+  y: number;
+  i18n: I18n;
+};
+
+const renderSelfie = ({ selfie, width, y, i18n }: RenderSelfieOptions) => {
+  const group = new Konva.Group({ y });
+
+  const selfieWidth = 90;
+
+  const label = new Konva.Text({
+    x: 0,
+    y: 0,
+    text: `${i18n._(msg`Identity selfie`)}:`,
+    fill: textMutedForeground,
+    width,
+    fontFamily: 'Inter',
+    fontSize: textSm,
+    fontStyle: fontMedium,
+    lineHeight: 1.4,
+  });
+  group.add(label);
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const img = new SkiaImage(selfie.image) as unknown as HTMLImageElement;
+
+  const selfieImage = new Konva.Image({
+    image: img,
+    x: 0,
+    y: group.getClientRect().height + 4,
+    width: selfieWidth,
+    height: selfieWidth * (img.height / img.width),
+    cornerRadius: 4,
+  });
+  group.add(selfieImage);
+
+  const hashLabel = new Konva.Text({
+    x: 0,
+    y: group.getClientRect().height + 6,
+    text: `${i18n._(msg`Selfie SHA-256`)}:`,
+    fill: textMutedForeground,
+    width,
+    fontFamily: 'Inter',
+    fontSize: textSm,
+    fontStyle: fontMedium,
+    lineHeight: 1.4,
+  });
+  group.add(hashLabel);
+
+  const hashValue = new Konva.Text({
+    x: 0,
+    y: group.getClientRect().height,
+    text: selfie.sha256,
+    fill: textMutedForeground,
+    fontFamily: 'monospace',
+    fontSize: textXs,
+    width,
+    wrap: 'char',
+  });
+  group.add(hashValue);
+
+  return group;
 };
 
 const renderColumnThree = (options: RenderColumnOptions) => {
@@ -460,6 +542,15 @@ const renderColumnThree = (options: RenderColumnOptions) => {
             .setLocale(APP_I18N_OPTIONS.defaultLocale)
             .toFormat('yyyy-MM-dd hh:mm:ss a (ZZZZ)')
         : i18n._(msg`Unknown`),
+    });
+  }
+
+  if (recipient.selfie) {
+    itemsToRender.push({
+      label: i18n._(msg`Selfie captured`),
+      value: DateTime.fromJSDate(recipient.selfie.capturedAt)
+        .setLocale(APP_I18N_OPTIONS.defaultLocale)
+        .toFormat('yyyy-MM-dd hh:mm:ss a (ZZZZ)'),
     });
   }
 

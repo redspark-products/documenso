@@ -8,6 +8,7 @@ import { getRecipientById } from '@documenso/lib/server-only/recipient/get-recip
 import { setDocumentRecipients } from '@documenso/lib/server-only/recipient/set-document-recipients';
 import { setTemplateRecipients } from '@documenso/lib/server-only/recipient/set-template-recipients';
 import { updateEnvelopeRecipients } from '@documenso/lib/server-only/recipient/update-envelope-recipients';
+import { assertRecipientSelfieProvided } from '@documenso/lib/server-only/recipient-selfie/assert-recipient-selfie-provided';
 import { assertSenderNotDisabled } from '@documenso/lib/server-only/user/assert-user-not-disabled';
 import { isTspEnvelope } from '@documenso/lib/types/signature-level';
 import { unsafeBuildEnvelopeIdQuery } from '@documenso/lib/utils/envelope';
@@ -45,11 +46,17 @@ import {
   ZUpdateTemplateRecipientsRequestSchema,
   ZUpdateTemplateRecipientsResponseSchema,
 } from './schema';
+import { uploadRecipientSelfieRoute } from './upload-recipient-selfie';
 
 export const recipientRouter = router({
   suggestions: {
     find: findRecipientSuggestionsRoute,
   },
+
+  /**
+   * @private
+   */
+  uploadRecipientSelfie: uploadRecipientSelfieRoute,
 
   /**
    * @public
@@ -609,7 +616,13 @@ export const recipientRouter = router({
             ...unsafeBuildEnvelopeIdQuery({ type: 'documentId', id: documentId }, EnvelopeType.DOCUMENT),
             recipients: { some: { token } },
           },
-          select: { signatureLevel: true, internalVersion: true, userId: true },
+          select: {
+            signatureLevel: true,
+            internalVersion: true,
+            userId: true,
+            documentMeta: { select: { requireSignerSelfie: true } },
+            recipients: { where: { token }, select: { id: true, role: true } },
+          },
         });
 
         // The most common cause is a stale signing page: the document was
@@ -627,6 +640,17 @@ export const recipientRouter = router({
         await assertSenderNotDisabled({ userId: envelope.userId });
 
         if (isTspEnvelope(envelope)) {
+          // The TSP branch never reaches `completeDocumentWithToken`, which
+          // enforces the selfie for SES envelopes.
+          const [recipient] = envelope.recipients;
+
+          if (recipient) {
+            await assertRecipientSelfieProvided({
+              recipient,
+              requireSignerSelfie: envelope.documentMeta?.requireSignerSelfie,
+            });
+          }
+
           return await prepareCscRecipientSigning({
             recipientToken: token,
             requestMetadata: ctx.metadata.requestMetadata,

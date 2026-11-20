@@ -14,6 +14,7 @@ import { Header } from '~/components/general/app-header';
 import { GenericErrorLayout } from '~/components/general/generic-error-layout';
 import { OrganisationBillingBanner } from '~/components/general/organisations/organisation-billing-banner';
 import { OrganisationQuotaBanner } from '~/components/general/organisations/organisation-quota-banner';
+import { PublicLegalLinks } from '~/components/general/public-legal-links';
 import { VerifyEmailBanner } from '~/components/general/verify-email-banner';
 import { authenticatedMiddleware } from '~/middleware/authenticated';
 import { TeamProvider } from '~/providers/team';
@@ -127,6 +128,10 @@ export default function Layout({ loaderData, params, matches }: Route.ComponentP
           >
             <Outlet />
           </main>
+
+          <footer className="py-4">
+            <PublicLegalLinks />
+          </footer>
         </div>
       </TeamProvider>
     </OrganisationProvider>

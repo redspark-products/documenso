@@ -29,6 +29,7 @@ import { mapSecondaryIdToDocumentId, unsafeBuildEnvelopeIdQuery } from '../../ut
 import { getRecipientsInActiveSigningStep, isRecipientTurnBySigningOrder } from '../../utils/recipient-groups';
 import { assertRecipientNotExpired, isRecipientBefore } from '../../utils/recipients';
 import { getIsRecipientsTurnToSign } from '../recipient/get-is-recipient-turn';
+import { assertRecipientSelfieProvided } from '../recipient-selfie/assert-recipient-selfie-provided';
 import { assertSenderNotDisabled } from '../user/assert-user-not-disabled';
 import { triggerWebhook } from '../webhooks/trigger/trigger-webhook';
 import { isRecipientAuthorized } from './is-recipient-authorized';
@@ -210,6 +211,11 @@ export const completeDocumentWithToken = async ({
       }),
     });
   }
+
+  await assertRecipientSelfieProvided({
+    recipient,
+    requireSignerSelfie: envelope.documentMeta?.requireSignerSelfie,
+  });
 
   let fields = await prisma.field.findMany({
     where: {

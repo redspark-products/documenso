@@ -206,7 +206,9 @@ export const run = async ({ payload, io }: { payload: TSealDocumentJobDefinition
 
     const usePlaywrightPdf = NEXT_PRIVATE_USE_PLAYWRIGHT_PDF();
 
-    const needsCertificate = settings.includeSigningCertificate;
+    // The certificate is where selfie evidence is shown, so a team that disabled
+    // certificates still gets one on documents that required a selfie.
+    const needsCertificate = settings.includeSigningCertificate || envelope.documentMeta.requireSignerSelfie;
     const needsAuditLog = settings.includeAuditLog;
 
     const newDocumentData: Array<{ oldDocumentDataId: string; newDocumentDataId: string }> = [];

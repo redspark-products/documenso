@@ -1,3 +1,4 @@
+import { prisma } from '@documenso/prisma';
 import { PDF } from '@libpdf/core';
 import { i18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
@@ -12,6 +13,7 @@ import { extractDocumentAuthMethods } from '../../utils/document-auth';
 import { getTranslations } from '../../utils/i18n';
 import { getDocumentCertificateAuditLogs } from '../document/get-document-certificate-audit-logs';
 import { getOrganisationClaimByTeamId } from '../organisation/get-organisation-claims';
+import { getRecipientSelfieBytes } from '../recipient-selfie/get-recipient-selfie-bytes';
 import { renderCertificate } from './render-certificate';
 
 export type GenerateCertificatePdfOptions = {
@@ -43,12 +45,13 @@ export const generateCertificatePdf = async (options: GenerateCertificatePdfOpti
 
   const documentLanguage = ZSupportedLanguageCodeSchema.parse(language);
 
-  const [organisationClaim, auditLogs, messages] = await Promise.all([
+  const [organisationClaim, auditLogs, messages, selfies] = await Promise.all([
     getOrganisationClaimByTeamId({ teamId: envelope.teamId }),
     getDocumentCertificateAuditLogs({
       envelopeId: envelope.id,
     }),
     getTranslations(documentLanguage),
+    getCertificateSelfies(envelope.id),
   ]);
 
   i18n.loadAndActivate({
@@ -126,6 +129,7 @@ export const generateCertificatePdf = async (options: GenerateCertificatePdfOpti
         signatureField,
         rejectionReason: recipient.rejectionReason,
         authLevel,
+        selfie: selfies.get(recipient.id) ?? null,
         logs: {
           emailed: emailSent ?? null,
           sent: documentSent ?? null,
@@ -147,4 +151,25 @@ export const generateCertificatePdf = async (options: GenerateCertificatePdfOpti
   const certificatePages = await renderCertificate(payload);
 
   return await PDF.merge(certificatePages);
+};
+
+/**
+ * A selfie that fails decryption or its hash check makes sealing throw on
+ * purpose: issuing a certificate without the evidence the signer provided
+ * would be worse than a retried seal job.
+ */
+const getCertificateSelfies = async (envelopeId: string) => {
+  const selfies = await prisma.recipientSelfie.findMany({
+    where: { envelopeId },
+  });
+
+  const entries = await Promise.all(
+    selfies.map(async (selfie) => {
+      const image = Buffer.from(await getRecipientSelfieBytes({ selfie }));
+
+      return [selfie.recipientId, { image, sha256: selfie.sha256, capturedAt: selfie.capturedAt }] as const;
+    }),
+  );
+
+  return new Map(entries);
 };
