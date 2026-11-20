@@ -657,6 +657,10 @@ msgid "{user} cancelled the document"
 msgstr "{user} ha annullato il documento"
 
 #: packages/lib/utils/document-audit-logs.ts
+msgid "{user} captured an identity selfie"
+msgstr ""
+
+#: packages/lib/utils/document-audit-logs.ts
 msgid "{user} CC'd the document"
 msgstr "{user} ha messo il documento in CC"
 
@@ -2816,6 +2820,10 @@ msgstr ""
 msgid "By using the electronic signature feature, you are consenting to conduct transactions and receive disclosures electronically. You acknowledge that your electronic signature on documents is binding and that you accept the terms outlined in the documents you are signing."
 msgstr "Utilizzando la funzione di firma elettronica, acconsenti a effettuare transazioni e ricevere divulgazioni elettronicamente. Riconosci che la tua firma elettronica sui documenti è vincolante e accetti i termini delineati nei documenti che stai firmando."
 
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "Camera access was blocked. Allow camera access for this site in your browser settings, then try again."
+msgstr ""
+
 #: packages/ui/components/recipient/recipient-role-select.tsx
 msgid "Can prepare"
 msgstr "Può preparare"
@@ -2926,6 +2934,8 @@ msgstr "Non riesci a trovare qualcuno?"
 #: apps/remix/app/components/general/document-signing/document-signing-reject-dialog.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-signature-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-text-field.tsx
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
 #: apps/remix/app/components/general/document/document-attachments-popover.tsx
 #: apps/remix/app/components/general/document/embedded-editor-attachment-popover.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-settings-dialog.tsx
@@ -2937,7 +2947,6 @@ msgstr "Non riesci a trovare qualcuno?"
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/security.linked-accounts.tsx
 #: packages/ui/primitives/document-flow/field-item-advanced-settings.tsx
-#: packages/ui/primitives/document-flow/send-document-action-dialog.tsx
 #: packages/ui/primitives/signature-pad/signature-pad-dialog.tsx
 msgid "Cancel"
 msgstr "Annulla"
@@ -2981,6 +2990,10 @@ msgstr "Non è possibile caricare gli elementi dopo che il documento è stato in
 
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "Capabilities enabled for this organisation."
+msgstr ""
+
+#: apps/remix/app/components/general/document/recipient-selfie-view-dialog.tsx
+msgid "Captured by {recipientName} before signing. This is biometric data, do not share it."
 msgstr ""
 
 #: packages/lib/constants/recipient-roles.ts
@@ -4179,6 +4192,10 @@ msgstr "Scadenza predefinita della busta"
 msgid "Default file"
 msgstr "File predefinito"
 
+#: apps/remix/app/components/forms/document-preferences-form.tsx
+msgid "Default for new documents. Signers must consent to and capture a selfie with their camera before completing. The selfie is biometric data and is added to the signing certificate."
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 msgid "Default Organisation Role for New Users"
 msgstr "Ruolo dell'organizzazione predefinito per nuovi utenti"
@@ -4593,6 +4610,7 @@ msgstr "Disabilita Account"
 msgid "Disable Two Factor Authentication before deleting your account."
 msgstr "Disabilita l'Autenticazione a Due Fattori prima di eliminare il tuo account."
 
+#: apps/remix/app/components/forms/document-preferences-form.tsx
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks._index.tsx
@@ -5226,7 +5244,6 @@ msgid "Don't repeat"
 msgstr "Non ripetere"
 
 #: apps/remix/app/components/dialogs/team-delete-dialog.tsx
-#: apps/remix/app/components/dialogs/team-delete-dialog.tsx
 msgid "Don't transfer (Delete all documents)"
 msgstr "Non trasferire (elimina tutti i documenti)"
 
@@ -5813,6 +5830,7 @@ msgstr "Abilita i token API del team per delegare la proprietà del documento a 
 
 #: apps/remix/app/components/dialogs/webhook-create-dialog.tsx
 #: apps/remix/app/components/dialogs/webhook-edit-dialog.tsx
+#: apps/remix/app/components/forms/document-preferences-form.tsx
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 #: apps/remix/app/components/general/admin-email-blocklist-section.tsx
 #: apps/remix/app/components/general/admin-global-settings-section.tsx
@@ -7008,6 +7026,10 @@ msgstr "Sono tenuto a ricevere una copia di questo documento"
 msgid "I am the owner of this document"
 msgstr "Sono il proprietario di questo documento"
 
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "I explicitly consent to the capture, storage and use of my selfie as proof of identity for signing this document."
+msgstr ""
+
 #: apps/remix/app/routes/_unauthenticated+/o.$orgUrl.signin.tsx
 msgid "I understand that I am providing my credentials to a 3rd party service configured by this organisation"
 msgstr "Capisco che sto fornendo le mie credenziali a un servizio di terze parti configurato da questa organizzazione"
@@ -7030,6 +7052,15 @@ msgstr "Identificazione dei campi di input in corso"
 #: apps/remix/app/components/dialogs/ai-recipient-detection-dialog.tsx
 msgid "Identifying recipients"
 msgstr "Identificazione dei destinatari in corso"
+
+#: apps/remix/app/components/general/document/recipient-selfie-view-dialog.tsx
+#: packages/lib/server-only/pdf/render-certificate.ts
+msgid "Identity selfie"
+msgstr ""
+
+#: apps/remix/app/components/general/document/recipient-selfie-view-dialog.tsx
+msgid "Identity selfie of {recipientName}"
+msgstr ""
 
 #: apps/remix/app/components/forms/email-preferences-form.tsx
 msgid "If a custom message has been provided while configuring the document, it replaces the default body text, but the heading still follows this setting."
@@ -7067,6 +7098,10 @@ msgstr "Se non ti aspettavi questo account o hai domande, <0>contatta l'assisten
 #: packages/email/template-components/template-access-auth-2fa.tsx
 msgid "If you didn't request this verification code, you can safely ignore this email."
 msgstr "Se non hai richiesto questo codice di verifica, puoi tranquillamente ignorare questa email."
+
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "If you do not agree, cancel and use the reject option on the document instead. To exercise your rights over this data, contact the sender of this document."
+msgstr ""
 
 #: apps/remix/app/components/dialogs/passkey-create-dialog.tsx
 msgid "If you do not want to use the authenticator prompted, you can close it, which will then display the next available authenticator."
@@ -7186,6 +7221,7 @@ msgstr "Ereditare metodo di autenticazione"
 #: apps/remix/app/components/forms/branding-preferences-form.tsx
 #: apps/remix/app/components/forms/certificate-preferences-form.tsx
 #: apps/remix/app/components/forms/certificate-preferences-form.tsx
+#: apps/remix/app/components/forms/document-preferences-form.tsx
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 #: apps/remix/app/components/forms/document-preferences-form.tsx
 #: apps/remix/app/components/forms/document-preferences-form.tsx
@@ -8338,6 +8374,10 @@ msgstr ""
 msgid "No activity in the selected range."
 msgstr ""
 
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "No camera was found on this device. Open the signing link on a device with a camera."
+msgstr ""
+
 #: apps/remix/app/components/general/pdf-viewer/envelope-pdf-viewer.tsx
 #: apps/remix/app/components/general/pdf-viewer/pdf-viewer.tsx
 msgid "No document found"
@@ -8524,6 +8564,10 @@ msgstr "Nessun risultato trovato"
 #: apps/remix/app/components/general/filter-pill.tsx
 msgid "No results found."
 msgstr "Nessun risultato trovato."
+
+#: apps/remix/app/components/general/document/recipient-selfie-view-dialog.tsx
+msgid "No selfie is available for this recipient."
+msgstr ""
 
 #: packages/ui/primitives/document-flow/missing-signature-field-dialog.tsx
 msgid "No signature field found"
@@ -8783,6 +8827,10 @@ msgstr ""
 
 #: apps/remix/app/components/general/app-command-menu.tsx
 msgid "Open"
+msgstr ""
+
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "Open camera"
 msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl._index.tsx
@@ -9901,6 +9949,10 @@ msgid "Recipient authorised the remote signature"
 msgstr "Il destinatario ha autorizzato la firma remota"
 
 #: packages/lib/utils/document-audit-logs.ts
+msgid "Recipient captured an identity selfie"
+msgstr ""
+
+#: packages/lib/utils/document-audit-logs.ts
 msgid "Recipient CC'd the document"
 msgstr "Il destinatario ha messo in CC il documento"
 
@@ -10357,6 +10409,11 @@ msgstr "Richiedi passkey"
 msgid "Require password"
 msgstr "Richiedi password"
 
+#: apps/remix/app/components/forms/document-preferences-form.tsx
+#: apps/remix/app/components/general/envelope-editor/envelope-editor-settings-dialog.tsx
+msgid "Require signer selfie"
+msgstr ""
+
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/checkbox-field.tsx
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/dropdown-field.tsx
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/number-field.tsx
@@ -10502,6 +10559,10 @@ msgstr ""
 #: apps/remix/app/components/general/organisations/organisation-billing-banner.tsx
 msgid "Restricted Access"
 msgstr "Accesso limitato"
+
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "Retake"
+msgstr ""
 
 #: apps/remix/app/routes/_unauthenticated+/articles.signature-disclosure.tsx
 msgid "Retention of Documents"
@@ -11019,13 +11080,23 @@ msgstr "I modelli selezionati verranno eliminati in modo definitivo"
 msgid "Selector"
 msgstr "Selettore"
 
+#: packages/lib/server-only/pdf/render-certificate.ts
+msgid "Selfie captured"
+msgstr ""
+
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "Selfie required"
+msgstr ""
+
+#: packages/lib/server-only/pdf/render-certificate.ts
+msgid "Selfie SHA-256"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/email-transport-send-test-dialog.tsx
 #: apps/remix/app/components/dialogs/envelope-distribute-dialog.tsx
 #: apps/remix/app/components/dialogs/webhook-test-dialog.tsx
 #: packages/ui/primitives/document-flow/add-subject.tsx
 #: packages/ui/primitives/document-flow/add-subject.tsx
-#: packages/ui/primitives/document-flow/send-document-action-dialog.tsx
-#: packages/ui/primitives/document-flow/send-document-action-dialog.tsx
 msgid "Send"
 msgstr "Invia"
 
@@ -11048,7 +11119,6 @@ msgstr "Invia documento"
 #: apps/remix/app/components/dialogs/envelope-distribute-dialog.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor-header.tsx
 #: apps/remix/app/components/general/envelope-editor/envelope-editor.tsx
-#: packages/ui/primitives/document-flow/send-document-action-dialog.tsx
 msgid "Send Document"
 msgstr "Invia documento"
 
@@ -11522,6 +11592,10 @@ msgstr "Eventi del Firmatario"
 msgctxt "Recipient role plural name"
 msgid "Signers"
 msgstr "Firmanti"
+
+#: apps/remix/app/components/general/envelope-editor/envelope-editor-settings-dialog.tsx
+msgid "Signers must consent to and capture a selfie with their camera before completing. The selfie is added to the signing certificate."
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Signers that Signed Up"
@@ -12134,6 +12208,10 @@ msgstr "Requisiti di sistema"
 msgid "System Theme"
 msgstr "Tema del sistema"
 
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "Take photo"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/admin-swap-subscription-dialog.tsx
 msgid "Target Organisation"
 msgstr "Organizzazione di destinazione"
@@ -12568,6 +12646,18 @@ msgstr "I metodi di autenticazione richiesti per i destinatari per firmare il ca
 msgid "The authentication methods required for recipients to view the document."
 msgstr "I metodi di autenticazione richiesti per i destinatari per visualizzare il documento."
 
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "The camera could not be started. Please try again."
+msgstr ""
+
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "The camera is being used by another application. Close it and try again."
+msgstr ""
+
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "The camera is only available on a secure (HTTPS) connection. Open the signing link over HTTPS and try again."
+msgstr ""
+
 #: apps/remix/app/components/general/admin-site-banner-section.tsx
 msgid "The content to show in the banner, HTML is allowed"
 msgstr "Il contenuto da mostrare nel banner, HTML è consentito"
@@ -12897,6 +12987,10 @@ msgstr "Il destinatario è tenuto a firmare il documento affinché sia completat
 #: packages/ui/components/recipient/recipient-role-select.tsx
 msgid "The recipient is required to view the document for it to be completed."
 msgstr "Il destinatario è tenuto a visualizzare il documento affinché sia completato."
+
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "The selfie is biometric personal data. It is stored encrypted together with the signing records of this document and included in the signing certificate, which is shared with every party to this document."
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/admin+/email-domains.$id.tsx
 msgid "The SES identity has been deleted and recreated with the same keys. DNS records remain unchanged."
@@ -13257,6 +13351,10 @@ msgstr "Questo documento utilizza l'inserimento campo legacy, consigliamo di uti
 msgid "This document requires a qualified electronic signature. Sign in with your signing provider to continue."
 msgstr ""
 
+#: apps/remix/app/utils/toast-error-messages.ts
+msgid "This document requires a selfie to confirm your identity. Open the signing link sent to your email in a browser with camera access to complete it."
+msgstr ""
+
 #: apps/remix/app/components/general/envelope-signing/envelope-signing-complete-dialog.tsx
 msgid "This document was already signed and no further action was taken."
 msgstr ""
@@ -13595,6 +13693,10 @@ msgstr "Per poter aggiungere membri a un team, devi prima aggiungerli all'organi
 #: apps/remix/app/components/dialogs/team-email-update-dialog.tsx
 msgid "To change the email you must remove and add a new email address."
 msgstr "Per cambiare la email devi rimuovere e aggiungere un nuovo indirizzo email."
+
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "To confirm your identity, the sender of this document requires a photo of your face (selfie) taken now with your camera."
+msgstr ""
 
 #. placeholder {0}: user.email
 #. placeholder {0}: userToDisable.email
@@ -14399,6 +14501,10 @@ msgstr "Usa Modello"
 msgid "Use template name"
 msgstr ""
 
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "Use this photo"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 msgid "Use uploaded file name"
 msgstr ""
@@ -14667,6 +14773,11 @@ msgstr "Visualizza documento da firmare"
 msgid "View documents associated with this email"
 msgstr "Visualizza documenti associati a questa email"
 
+#: apps/remix/app/components/general/document/recipient-selfie-view-dialog.tsx
+#: apps/remix/app/components/general/document/recipient-selfie-view-dialog.tsx
+msgid "View identity selfie"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/admin+/organisations.$id.tsx
 msgid "View insights"
 msgstr "Visualizza approfondimenti"
@@ -14827,6 +14938,10 @@ msgstr "Non siamo in grado di rimuovere questa chiave d'accesso al momento. Per 
 #: apps/remix/app/components/tables/settings-security-passkey-table-actions.tsx
 msgid "We are unable to update this passkey at the moment. Please try again later."
 msgstr "Non siamo in grado di aggiornare questa chiave d'accesso al momento. Per favore riprova più tardi."
+
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "We could not save your selfie. Please try again."
+msgstr ""
 
 #: apps/remix/app/components/general/app-command-menu.tsx
 msgid "We couldn’t complete the search. Try again."
@@ -15541,10 +15656,6 @@ msgstr "Stai per rimuovere il seguente utente dal team <0>{teamName}</0>:"
 msgid "You are about to revoke access for team <0>{0}</0> ({1}) to use your email."
 msgstr "Stai per revocare l'accesso per il team <0>{0}</0> ({1}) per utilizzare la tua email."
 
-#: packages/ui/primitives/document-flow/send-document-action-dialog.tsx
-msgid "You are about to send this document to the recipients. Are you sure you want to continue?"
-msgstr "Stai per inviare questo documento ai destinatari. Sei sicuro di voler continuare?"
-
 #: apps/remix/app/components/general/billing-plans.tsx
 msgid "You are about to subscribe to the {planName}"
 msgstr "Stai per sottoscrivere il {planName}"
@@ -15741,6 +15852,10 @@ msgstr "Non puoi rimuovere il proprietario dell’organizzazione dal team."
 #: packages/ui/primitives/document-upload-button.tsx
 msgid "You cannot upload documents at this time."
 msgstr "Non puoi caricare documenti in questo momento."
+
+#: packages/lib/utils/document-audit-logs.ts
+msgid "You captured an identity selfie"
+msgstr ""
 
 #: packages/lib/utils/document-audit-logs.ts
 msgid "You CC'd the document"
@@ -15992,6 +16107,10 @@ msgstr ""
 #: packages/lib/utils/document-audit-logs.ts
 msgid "You moved the document to team"
 msgstr "Hai spostato il documento al team"
+
+#: apps/remix/app/components/general/document-signing/signer-selfie-step.tsx
+msgid "You must consent before taking the selfie"
+msgstr ""
 
 #: apps/remix/app/components/dialogs/admin-organisation-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/organisation-delete-dialog.tsx
