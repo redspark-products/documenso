@@ -505,6 +505,7 @@ model Envelope {
   documentMeta   DocumentMeta @relation(fields: [documentMetaId], references: [id])
 
   envelopeAttachments EnvelopeAttachment[]
+  recipientSelfies    RecipientSelfie[]
 
   @@index([type])
   @@index([status])
@@ -592,6 +593,8 @@ model DocumentMeta {
   uploadSignatureEnabled Boolean @default(true)
   drawSignatureEnabled   Boolean @default(true)
 
+  requireSignerSelfie Boolean @default(false)
+
   language           String                     @default("en")
   distributionMethod DocumentDistributionMethod @default(EMAIL)
 
@@ -677,6 +680,7 @@ model Recipient {
 
   cscCredential CscCredential?
   cscSession    CscSession?
+  selfie        RecipientSelfie?
 
   @@index([token])
   @@index([email])
@@ -706,6 +710,35 @@ enum FieldType {
 }
 
 /// @zod.import(["import { ZFieldMetaNotOptionalSchema } from '@documenso/lib/types/field-meta';"])
+/// Identity evidence captured from the signer's camera before completion.
+/// `data` always holds ciphertext (see store-recipient-selfie.ts); `sha256` is
+/// computed over the normalized plaintext image so it can be re-verified.
+model RecipientSelfie {
+  id String @id @default(cuid())
+
+  recipientId Int       @unique
+  recipient   Recipient @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  envelopeId String
+  envelope   Envelope @relation(fields: [envelopeId], references: [id], onDelete: Cascade)
+
+  dataType DocumentDataType
+  data     String
+  mimeType String
+  sha256   String
+  width    Int
+  height   Int
+
+  capturedAt DateTime @default(now())
+  ipAddress  String?
+  userAgent  String?
+
+  consentGivenAt     DateTime
+  consentTextVersion String
+
+  @@index([envelopeId])
+}
+
 model Field {
   id             Int          @id @default(autoincrement())
   secondaryId    String       @unique @default(cuid())
@@ -1050,6 +1083,8 @@ model OrganisationGlobalSettings {
 
   // AI features settings.
   aiFeaturesEnabled Boolean @default(false)
+
+  requireSignerSelfie Boolean @default(false)
 }
 
 /// @zod.import(["import { ZDocumentEmailSettingsSchema } from '@documenso/lib/types/document-email';", "import { ZDefaultRecipientsSchema } from '@documenso/lib/types/default-recipients';", "import { ZEnvelopeExpirationPeriod as ZEnvelopeExpirationPeriodSchema } from '@documenso/lib/constants/envelope-expiration';", "import { ZEnvelopeReminderSettings as ZEnvelopeReminderSettingsSchema } from '@documenso/lib/constants/envelope-reminder';", "import { ZCssVarsSchema } from '@documenso/lib/types/css-vars';"])
@@ -1093,6 +1128,8 @@ model TeamGlobalSettings {
 
   // AI features settings.
   aiFeaturesEnabled Boolean?
+
+  requireSignerSelfie Boolean?
 }
 
 model Team {
