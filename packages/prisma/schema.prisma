@@ -710,9 +710,34 @@ enum FieldType {
 }
 
 /// @zod.import(["import { ZFieldMetaNotOptionalSchema } from '@documenso/lib/types/field-meta';"])
-/// Identity evidence captured from the signer's camera before completion.
-/// `data` always holds ciphertext (see store-recipient-selfie.ts); `sha256` is
-/// computed over the normalized plaintext image so it can be re-verified.
+model Field {
+  id             Int          @id @default(autoincrement())
+  secondaryId    String       @unique @default(cuid())
+  envelopeId     String
+  envelopeItemId String
+  recipientId    Int
+  type           FieldType
+  page           Int /// @zod.number.describe("The page number of the field on the document. Starts from 1.")
+  positionX      Decimal      @default(0)
+  positionY      Decimal      @default(0)
+  width          Decimal      @default(-1)
+  height         Decimal      @default(-1)
+  customText     String
+  inserted       Boolean
+  envelopeItem   EnvelopeItem @relation(fields: [envelopeItemId], references: [id], onDelete: Cascade)
+  envelope       Envelope     @relation(fields: [envelopeId], references: [id], onDelete: Cascade)
+  recipient      Recipient    @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+  signature      Signature?
+  fieldMeta      Json? /// [FieldMeta] @zod.custom.use(ZFieldMetaNotOptionalSchema)
+
+  @@index([envelopeId])
+  @@index([envelopeItemId])
+  @@index([recipientId])
+}
+
+// Identity evidence captured from the signer's camera before completion.
+// `data` always holds ciphertext (see store-recipient-selfie.ts); `sha256` is
+// computed over the normalized plaintext image so it can be re-verified.
 model RecipientSelfie {
   id String @id @default(cuid())
 
@@ -737,31 +762,6 @@ model RecipientSelfie {
   consentTextVersion String
 
   @@index([envelopeId])
-}
-
-model Field {
-  id             Int          @id @default(autoincrement())
-  secondaryId    String       @unique @default(cuid())
-  envelopeId     String
-  envelopeItemId String
-  recipientId    Int
-  type           FieldType
-  page           Int /// @zod.number.describe("The page number of the field on the document. Starts from 1.")
-  positionX      Decimal      @default(0)
-  positionY      Decimal      @default(0)
-  width          Decimal      @default(-1)
-  height         Decimal      @default(-1)
-  customText     String
-  inserted       Boolean
-  envelopeItem   EnvelopeItem @relation(fields: [envelopeItemId], references: [id], onDelete: Cascade)
-  envelope       Envelope     @relation(fields: [envelopeId], references: [id], onDelete: Cascade)
-  recipient      Recipient    @relation(fields: [recipientId], references: [id], onDelete: Cascade)
-  signature      Signature?
-  fieldMeta      Json? /// [FieldMeta] @zod.custom.use(ZFieldMetaNotOptionalSchema)
-
-  @@index([envelopeId])
-  @@index([envelopeItemId])
-  @@index([recipientId])
 }
 
 /// @zod.import(["import { ZEnvelopeContentMetaSchema } from '@documenso/lib/types/envelope-content-meta';"])
