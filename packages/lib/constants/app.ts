@@ -53,6 +53,11 @@ export const NEXT_PUBLIC_PRIVACY_POLICY_URL = () =>
 
 export const NEXT_PUBLIC_IMPRINT_URL = () => env('NEXT_PUBLIC_IMPRINT_URL');
 
+// AGPL-3.0 section 13: users interacting with this modified version over a
+// network must be offered its corresponding source, so the link always renders.
+export const NEXT_PUBLIC_SOURCE_CODE_URL = () =>
+  env('NEXT_PUBLIC_SOURCE_CODE_URL') || 'https://github.com/redspark-products/documenso';
+
 export const NEXT_PRIVATE_USE_LEGACY_SIGNING_SUBFILTER = () =>
   env('NEXT_PRIVATE_USE_LEGACY_SIGNING_SUBFILTER') === 'true';
 

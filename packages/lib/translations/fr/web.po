@@ -11925,6 +11925,10 @@ msgstr ""
 msgid "Source"
 msgstr "Source"
 
+#: apps/remix/app/components/general/public-legal-links.tsx
+msgid "Source code"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/o.$orgUrl.settings.sso.tsx
 msgid "Space-separated list of domains. Leave empty to allow all domains."
 msgstr "Liste des domaines séparée par des espaces. Laissez vide pour autoriser tous les domaines."

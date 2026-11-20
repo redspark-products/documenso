@@ -49,6 +49,7 @@ import { DocumentSigningProvider } from '~/components/general/document-signing/d
 import { DocumentSigningSenderDisabledPage } from '~/components/general/document-signing/document-signing-sender-disabled-page';
 import { EnvelopeSigningProvider } from '~/components/general/document-signing/envelope-signing-provider';
 import { SignerSelfieProvider } from '~/components/general/document-signing/signer-selfie-provider';
+import { PublicLegalLinks } from '~/components/general/public-legal-links';
 import { RecipientBranding } from '~/components/general/recipient-branding';
 import { useCspNonce } from '~/utils/nonce';
 import { superLoaderJson, useSuperLoaderData } from '~/utils/super-json-loader';
@@ -535,6 +536,8 @@ const SigningPageV1 = ({ data }: { data: Awaited<ReturnType<typeof handleV1Loade
               branding={branding}
             />
           </div>
+
+          <PublicLegalLinks className="pb-8" />
         </SignerSelfieProvider>
       </DocumentSigningAuthProvider>
     </DocumentSigningProvider>
