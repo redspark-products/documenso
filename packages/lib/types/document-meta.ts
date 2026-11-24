@@ -28,6 +28,7 @@ export const ZDocumentMetaSchema = DocumentMetaSchema.pick({
   typedSignatureEnabled: true,
   uploadSignatureEnabled: true,
   drawSignatureEnabled: true,
+  requireSignerSelfie: true,
   language: true,
   emailSettings: true,
 });
@@ -101,6 +102,10 @@ export const ZDocumentMetaDrawSignatureEnabledSchema = z
   .boolean()
   .describe('Whether to allow recipients to sign using a draw signature.');
 
+export const ZDocumentMetaRequireSignerSelfieSchema = z
+  .boolean()
+  .describe('Whether signers must consent to and capture a camera selfie before completing the document.');
+
 export const ZDocumentMetaUploadSignatureEnabledSchema = z
   .boolean()
   .describe('Whether to allow recipients to sign using an uploaded signature.');
@@ -123,6 +128,7 @@ export const ZDocumentMetaCreateSchema = z.object({
   typedSignatureEnabled: ZDocumentMetaTypedSignatureEnabledSchema.optional(),
   uploadSignatureEnabled: ZDocumentMetaUploadSignatureEnabledSchema.optional(),
   drawSignatureEnabled: ZDocumentMetaDrawSignatureEnabledSchema.optional(),
+  requireSignerSelfie: ZDocumentMetaRequireSignerSelfieSchema.optional(),
   emailId: z.string().nullish(),
   emailReplyTo: zEmail().nullish(),
   emailSettings: ZDocumentEmailSettingsSchema.nullish(),

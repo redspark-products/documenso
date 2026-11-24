@@ -57,6 +57,7 @@ export const updateTeamSettingsRoute = authenticatedProcedure
       defaultRecipients,
       // AI features settings.
       aiFeaturesEnabled,
+      requireSignerSelfie,
     } = data;
 
     if (Object.values(data).length === 0) {
@@ -188,6 +189,7 @@ export const updateTeamSettingsRoute = authenticatedProcedure
 
             // AI features settings.
             aiFeaturesEnabled,
+            requireSignerSelfie,
           },
         },
       },

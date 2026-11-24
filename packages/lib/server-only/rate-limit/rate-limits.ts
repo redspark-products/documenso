@@ -156,3 +156,14 @@ export const envelopeContentRateLimit = createRateLimit({
   max: 20,
   window: '1m',
 });
+
+// ---- Recipient selfie ----
+
+// IP only: the signing token must never be a rate limit key (it would be persisted
+// in plaintext). Retakes are legitimate re-uploads, so 10/min still leaves room
+// for a signer who retries a few times while stopping storage flooding.
+export const recipientSelfieUploadRateLimit = createRateLimit({
+  action: 'recipient.selfie-upload',
+  max: 10,
+  window: '1m',
+});

@@ -23,6 +23,7 @@ import getDataContentImageRoute from './routes/get-data-content-image';
 import getDataContentImageByTokenRoute from './routes/get-data-content-image-by-token';
 import getEnvelopeItemPdfRoute from './routes/get-envelope-item-pdf';
 import getEnvelopeItemPdfByTokenRoute from './routes/get-envelope-item-pdf-by-token';
+import getRecipientSelfieRoute from './routes/get-recipient-selfie';
 
 export const filesRoute = new Hono<HonoEnv>()
   /**
@@ -351,3 +352,4 @@ filesRoute.route('/', getEnvelopeItemPdfByTokenRoute);
 // Content image routes for both tokens and auth based, hard cached by dataContentId.
 filesRoute.route('/', getDataContentImageRoute);
 filesRoute.route('/', getDataContentImageByTokenRoute);
+filesRoute.route('/', getRecipientSelfieRoute);

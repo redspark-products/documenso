@@ -34,6 +34,7 @@ export default function TeamsSettingsPage() {
         defaultRecipients,
         delegateDocumentOwnership,
         aiFeaturesEnabled,
+        requireSignerSelfie,
       } = data;
 
       await updateTeamSettings({
@@ -45,6 +46,7 @@ export default function TeamsSettingsPage() {
           documentDateFormat,
           defaultRecipients,
           aiFeaturesEnabled,
+          requireSignerSelfie,
           ...(signatureTypes.length === 0
             ? {
                 typedSignatureEnabled: null,

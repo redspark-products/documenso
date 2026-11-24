@@ -269,7 +269,12 @@ export const createDocumentFromDirectTemplate = async ({
     strict: false,
   });
 
-  const derivedDocumentMeta = extractDerivedDocumentMeta(settings, directTemplateEnvelope.documentMeta, signatureLevel);
+  // The direct recipient is marked SIGNED during creation, without ever passing
+  // through the selfie capture step, so the requirement cannot be honoured here.
+  const derivedDocumentMeta = {
+    ...extractDerivedDocumentMeta(settings, directTemplateEnvelope.documentMeta, signatureLevel),
+    requireSignerSelfie: false,
+  };
 
   // The resulting document contains every non-direct template recipient plus the
   // direct recipient that is signing now. A recipientCount of 0 means unlimited.
